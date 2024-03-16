@@ -149,8 +149,10 @@ if st.button('Enviar URL'):
 
     translated_text = transcription_thread.join()
     st.session_state.transcription_done = True
+    st.session_state.translated_text = translated_text
 
-if 'transcription_done' in st.session_state and st.session_state.transcription_done and translated_text is not None:
+if 'transcription_done' in st.session_state and st.session_state.transcription_done:
+    translated_text = st.session_state.translated_text
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     if st.button('Generar Resumen'):
