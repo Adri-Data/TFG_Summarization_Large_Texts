@@ -1,4 +1,3 @@
-!pip install -r requirements.txt
 import streamlit as st
 import requests
 from streamlit_lottie import st_lottie
@@ -16,7 +15,6 @@ import streamlit_lottie as st_lottie
 import threading
 from deep_translator import GoogleTranslator
 from summarizer import Summarizer
-
 nltk.download('wordnet')
 
 def initialize_model_and_tokenizer(model_name):
