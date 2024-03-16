@@ -1,4 +1,6 @@
-torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+torch
+torchvision
+torchaudio
 git+https://github.com/m-bain/whisperx.git --upgrade
 pytube
 whisperx
