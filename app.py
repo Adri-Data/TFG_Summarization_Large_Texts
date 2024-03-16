@@ -135,22 +135,29 @@ if st.button('Enviar URL'):
     st.session_state.transcription_done = False
 
     progress_bar = st.progress(0)
-    for i in range(100):
-        time.sleep(2)
-        progress_bar.progress(i + 1)
+    with st.spinner('Generando Transcripción...'):
+        for i in range(100):
+            if not transcription_thread.is_alive():
+                progress_bar.progress(100)
+                break
+            else:
+                time.sleep(2)
+                progress_bar.progress(i + 1)
+
+    if transcription_thread.is_alive():
+        transcription_thread.join()
+        st.write("transcription_thread finished")
 
     translated_text = transcription_thread.join()
     st.session_state.transcription_done = True
 
-if 'transcription_done' in st.session_state and st.session_state.transcription_done:
+if 'transcription_done' in st.session_state and st.session_state.transcription_done and translated_text is not None:
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     if st.button('Generar Resumen'):
         st.write('Generando resumen...')
         text = translated_text
         reduced_text = generar_resumen_extractivo(text, ratio=0.3)
-
-
         model, tokenizer, device = initialize_model_and_tokenizer(model_name)
         _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
         st.write(f"Model: {model_name}")
