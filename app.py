@@ -10,9 +10,6 @@ from concurrent.futures import ThreadPoolExecutor
 from transformers import AutoModelForSeq2SeqLM, AutoModelWithLMHead, AutoTokenizer, MarianMTModel, MarianTokenizer
 from pytube import YouTube
 import whisperx
-import streamlit as st
-import requests
-import streamlit_lottie as st_lottie
 import threading
 from deep_translator import GoogleTranslator
 from summarizer import Summarizer
@@ -108,28 +105,45 @@ def traductor(text, source='en',target='es'):
     return resultado
 
 
-st.title('Resumen de Textos Largos con IA para mi TFG')
-st.write('''
-Para mi TFG, genero resúmenes de textos largos utilizando Inteligencia Artificial.
-Por favor, introduce la URL de un video de YouTube, selecciona el idioma del video y del resumen,
-y elige el modelo de IA que se utilizará para generar el resumen.
-''')
-url = st.text_input('Introduce la URL del video de YouTube')
+import csv
+
+# Estilos personalizados
+st.markdown("""
+<style>
+    .reportview-container {
+        background: #f0f0f5
+    }
+    .big-font {
+        font-size:50px !important;
+    }
+    .medium-font {
+        font-size:25px !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<p class="big-font">Resumen de Textos Largos con IA para mi TFG</p>', unsafe_allow_html=True)
+st.markdown('<p class="medium-font">Para mi TFG, genero resúmenes de textos largos utilizando Inteligencia Artificial.</p>', unsafe_allow_html=True)
+st.markdown('Por favor, introduce la URL de un video de YouTube, selecciona el idioma del video y del resumen, y elige el modelo de IA que se utilizará para generar el resumen.')
+
+url = st.text_input('Introduce la URL del video de YouTube', 'https://www.youtube.com/watch?v=efoTZzqOrI8')
 idioma_video = st.selectbox('Selecciona el idioma del video', ['es', 'en', 'fr', 'ge'])
 
 if st.button('Enviar URL'):
     transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video))
     transcription_thread.start()
-    st.session_state.transcription_done = False  # Añade esta línea
+    st.session_state.transcription_done = False
+    st.write('Generando Transcripcion...')
 
-    while transcription_thread.is_alive():
-        st.write('Transcribiendo...')
-        time.sleep(1)
+    progress_bar = st.progress(0)
+    for i in range(100):
+        time.sleep(2)
+        progress_bar.progress(i + 1)
 
-    translated_text = transcription_thread.join()  # Aquí es donde obtienes el texto transcribido
+    translated_text = transcription_thread.join()
     st.session_state.transcription_done = True
 
-if 'transcription_done' in st.session_state and st.session_state.transcription_done:  # Añade esta línea
+if 'transcription_done' in st.session_state and st.session_state.transcription_done:
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     if st.button('Generar Resumen'):
@@ -156,3 +170,17 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
     
         st.write("_________________________________________________________________\n\n")
+
+    # Sistema de feedback
+    summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
+    summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
+
+    user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
+
+    if st.button('Enviar voto'):
+        st.write(f"Has votado por: {summary_labels[user_vote]}")
+        
+        # Almacenamiento de votos
+        with open('votes.csv', 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([summary_labels[user_vote]])
