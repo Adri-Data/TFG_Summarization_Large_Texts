@@ -146,49 +146,48 @@ if st.button('Enviar URL'):
 
     if transcription_thread.is_alive():
         transcription_thread.join()
-        st.write("transcription_thread finished")
 
     translated_text = transcription_thread.join()
     st.session_state.transcription_done = True
 
-if 'transcription_done' in st.session_state and st.session_state.transcription_done and translated_text is not None:
-    idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
-    model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
-    if st.button('Generar Resumen'):
-        st.write('Generando resumen...')
-        text = translated_text
-        reduced_text = generar_resumen_extractivo(text, ratio=0.3)
-        model, tokenizer, device = initialize_model_and_tokenizer(model_name)
-        _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
-        st.write(f"Model: {model_name}")
-        st.write("_________________________________________________________________\n\n")
-        st.write(f"\n Generated Summary without the pipeline: {summary_original}")
-        st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
-    
-        summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
-        st.write(f"\n Generated Summary with the pipeline: {summary_pipeline}")
-        st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
-    
-        _, summary_original_extracted = resumir_texto_final([_, reduced_text], model, tokenizer, device)
-        st.write(f"\n Generated Summary with extractive summarization: {summary_original_extracted}")
-        st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
-    
-        summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
-        st.write(f"\n Generated Summary with pipeline and extractive summarization: {summary_pipeline_extracted}")
-        st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
-    
-        st.write("_________________________________________________________________\n\n")
+    if 'transcription_done' in st.session_state and st.session_state.transcription_done:
+        idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
+        model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
+        if st.button('Generar Resumen'):
+            st.write('Generando resumen...')
+            text = translated_text
+            reduced_text = generar_resumen_extractivo(text, ratio=0.3)
+            model, tokenizer, device = initialize_model_and_tokenizer(model_name)
+            _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
+            st.write(f"Model: {model_name}")
+            st.write("_________________________________________________________________\n\n")
+            st.write(f"\n Generated Summary without the pipeline: {summary_original}")
+            st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
+        
+            summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
+            st.write(f"\n Generated Summary with the pipeline: {summary_pipeline}")
+            st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
+        
+            _, summary_original_extracted = resumir_texto_final([_, reduced_text], model, tokenizer, device)
+            st.write(f"\n Generated Summary with extractive summarization: {summary_original_extracted}")
+            st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
+        
+            summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
+            st.write(f"\n Generated Summary with pipeline and extractive summarization: {summary_pipeline_extracted}")
+            st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
+        
+            st.write("_________________________________________________________________\n\n")
 
-        # Sistema de feedback
-        summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
-        summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
+            # Sistema de feedback
+            summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
+            summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
 
-        user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
+            user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
 
-        if st.button('Enviar voto'):
-            st.write(f"Has votado por: {summary_labels[user_vote]}")
-            
-            # Almacenamiento de votos
-            with open('votes.csv', 'a', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow([summary_labels[user_vote]])
+            if st.button('Enviar voto'):
+                st.write(f"Has votado por: {summary_labels[user_vote]}")
+                
+                # Almacenamiento de votos
+                with open('votes.csv', 'a', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow([summary_labels[user_vote]])
