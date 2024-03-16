@@ -1,7 +1,7 @@
 torch
 torchvision
 torchaudio
-git+https://github.com/m-bain/whisperx.git --upgrade
+git+https://github.com/m-bain/whisperx.git
 pytube
 whisperx
 nltk
