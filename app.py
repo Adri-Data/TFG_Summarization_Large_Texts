@@ -133,12 +133,19 @@ if st.button('Enviar URL'):
     transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video))
     transcription_thread.start()
     st.session_state.transcription_done = False
-    st.write('Generando Transcripcion...')
 
     progress_bar = st.progress(0)
-    for i in range(100):
-        time.sleep(2)
-        progress_bar.progress(i + 1)
+    with st.spinner('Generando Transcripción...'):
+        for i in range(100):
+            if not transcription_thread.is_alive():
+                progress_bar.progress(100)
+                break
+            else:
+                time.sleep(2)
+                progress_bar.progress(i + 1)
+
+    if transcription_thread.is_alive():
+        transcription_thread.join()
 
     translated_text = transcription_thread.join()
     st.session_state.transcription_done = True
@@ -171,16 +178,16 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
     
         st.write("_________________________________________________________________\n\n")
 
-    # Sistema de feedback
-    summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
-    summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
+        # Sistema de feedback
+        summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
+        summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
 
-    user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
+        user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
 
-    if st.button('Enviar voto'):
-        st.write(f"Has votado por: {summary_labels[user_vote]}")
-        
-        # Almacenamiento de votos
-        with open('votes.csv', 'a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([summary_labels[user_vote]])
+        if st.button('Enviar voto'):
+            st.write(f"Has votado por: {summary_labels[user_vote]}")
+            
+            # Almacenamiento de votos
+            with open('votes.csv', 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([summary_labels[user_vote]])
