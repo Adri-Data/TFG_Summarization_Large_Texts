@@ -149,6 +149,8 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         st.write('Generando resumen...')
         text = translated_text
         reduced_text = generar_resumen_extractivo(text, ratio=0.3)
+
+
         model, tokenizer, device = initialize_model_and_tokenizer(model_name)
         _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
         st.write(f"Model: {model_name}")
