@@ -6,3 +6,4 @@ nltk
 concurrent.futures
 deep_translator
 summarizer
+streamlit_lottie
