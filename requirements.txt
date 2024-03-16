@@ -5,7 +5,6 @@ git+https://github.com/m-bain/whisperx.git
 pytube
 whisperx
 nltk
-concurrent.futures
 deep_translator
 summarizer
 streamlit_lottie
