@@ -5,6 +5,7 @@ from PIL import Image
 import concurrent.futures
 import nltk
 import torch
+import time
 from concurrent.futures import ThreadPoolExecutor
 from transformers import AutoModelForSeq2SeqLM, AutoModelWithLMHead, AutoTokenizer, MarianMTModel, MarianTokenizer
 from pytube import YouTube
