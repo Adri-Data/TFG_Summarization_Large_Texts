@@ -6,5 +6,5 @@ pytube
 whisperx
 nltk
 deep_translator
-summarizer
+bert-extractive-summarizer>=0.10.1
 streamlit_lottie
