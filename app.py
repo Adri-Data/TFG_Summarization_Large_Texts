@@ -126,7 +126,8 @@ if st.button('Enviar URL'):
         st.write('Transcribiendo...')
         time.sleep(1)
 
-    st.session_state.transcription_done = True  # Añade esta línea
+    translated_text = transcription_thread.join()  # Aquí es donde obtienes el texto transcribido
+    st.session_state.transcription_done = True
 
 if 'transcription_done' in st.session_state and st.session_state.transcription_done:  # Añade esta línea
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
