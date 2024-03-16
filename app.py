@@ -92,7 +92,7 @@ def resumir_texto_paralelo(texto, model, tokenizer, device, max_length):
 
 def generar_resumen_extractivo(texto, ratio, algoritmo="pagerank"):
     model = Summarizer()
-    resumen = model(texto, ratio=ratio, algorithm=algoritmo)
+    resumen = model(body=texto, ratio=ratio)  # Usar 'body' en lugar de pasar directamente el texto
     return resumen
 
 def start_transcription(url, source_lang):
