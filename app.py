@@ -118,29 +118,29 @@ idioma_video = st.selectbox('Selecciona el idioma del video', ['es', 'en', 'fr',
 if st.button('Enviar URL'):
     transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video))
     transcription_thread.start()
-idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
-model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
-if st.button('Generar Resumen'):
-    st.write('Generando resumen...')
-    text = translated_text
-    reduced_text = generar_resumen_extractivo(text, ratio=0.3)
-    model, tokenizer, device = initialize_model_and_tokenizer(model_name)
-    _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
-    st.write(f"Model: {model_name}")
-    st.write("_________________________________________________________________\n\n")
-    st.write(f"\n Generated Summary without the pipeline: {summary_original}")
-    st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
-
-    summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
-    st.write(f"\n Generated Summary with the pipeline: {summary_pipeline}")
-    st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
-
-    _, summary_original_extracted = resumir_texto_final([_, reduced_text], model, tokenizer, device)
-    st.write(f"\n Generated Summary with extractive summarization: {summary_original_extracted}")
-    st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
-
-    summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
-    st.write(f"\n Generated Summary with pipeline and extractive summarization: {summary_pipeline_extracted}")
-    st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
-
-    st.write("_________________________________________________________________\n\n")
+    idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
+    model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
+    if st.button('Generar Resumen'):
+        st.write('Generando resumen...')
+        text = translated_text
+        reduced_text = generar_resumen_extractivo(text, ratio=0.3)
+        model, tokenizer, device = initialize_model_and_tokenizer(model_name)
+        _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
+        st.write(f"Model: {model_name}")
+        st.write("_________________________________________________________________\n\n")
+        st.write(f"\n Generated Summary without the pipeline: {summary_original}")
+        st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
+    
+        summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
+        st.write(f"\n Generated Summary with the pipeline: {summary_pipeline}")
+        st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
+    
+        _, summary_original_extracted = resumir_texto_final([_, reduced_text], model, tokenizer, device)
+        st.write(f"\n Generated Summary with extractive summarization: {summary_original_extracted}")
+        st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
+    
+        summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
+        st.write(f"\n Generated Summary with pipeline and extractive summarization: {summary_pipeline_extracted}")
+        st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
+    
+        st.write("_________________________________________________________________\n\n")
