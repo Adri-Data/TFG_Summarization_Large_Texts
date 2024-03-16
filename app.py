@@ -135,17 +135,9 @@ if st.button('Enviar URL'):
     st.session_state.transcription_done = False
 
     progress_bar = st.progress(0)
-    with st.spinner('Generando Transcripción...'):
-        for i in range(100):
-            if not transcription_thread.is_alive():
-                progress_bar.progress(100)
-                break
-            else:
-                time.sleep(2)
-                progress_bar.progress(i + 1)
-
-    if transcription_thread.is_alive():
-        transcription_thread.join()
+    for i in range(100):
+        time.sleep(2)
+        progress_bar.progress(i + 1)
 
     translated_text = transcription_thread.join()
     st.session_state.transcription_done = True
