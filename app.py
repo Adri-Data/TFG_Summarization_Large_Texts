@@ -115,9 +115,19 @@ y elige el modelo de IA que se utilizará para generar el resumen.
 ''')
 url = st.text_input('Introduce la URL del video de YouTube')
 idioma_video = st.selectbox('Selecciona el idioma del video', ['es', 'en', 'fr', 'ge'])
+
 if st.button('Enviar URL'):
     transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video))
     transcription_thread.start()
+    st.session_state.transcription_done = False  # Añade esta línea
+
+    while transcription_thread.is_alive():
+        st.write('Transcribiendo...')
+        time.sleep(1)
+
+    st.session_state.transcription_done = True  # Añade esta línea
+
+if 'transcription_done' in st.session_state and st.session_state.transcription_done:  # Añade esta línea
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     if st.button('Generar Resumen'):
