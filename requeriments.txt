@@ -1,8 +1,8 @@
-!pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-!pip install git+https://github.com/m-bain/whisperx.git --upgrade
-!pip install pytube
-!pip install whisperx
-!pip install nltk
-!pip install concurrent.futures
-!pip install deep_translator
-!pip install summarizer
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+git+https://github.com/m-bain/whisperx.git --upgrade
+pytube
+whisperx
+nltk
+concurrent.futures
+deep_translator
+summarizer
