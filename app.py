@@ -1,3 +1,4 @@
+pip install -r requirements.txt
 import streamlit as st
 import requests
 from streamlit_lottie import st_lottie
