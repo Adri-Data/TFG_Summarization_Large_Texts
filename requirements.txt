@@ -7,4 +7,5 @@ whisperx>=0.1.0
 nltk>=3.4
 deep_translator>=1.4.4
 bert-extractive-summarizer>=0.10.1
-streamlit_lottie>=0.1.0
+streamlit_lottie>=0.0.5
+
