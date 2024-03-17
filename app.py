@@ -13,6 +13,7 @@ import whisperx
 import threading
 from deep_translator import GoogleTranslator
 from summarizer import Summarizer
+from queue import Queue
 nltk.download('wordnet')
 
 def initialize_model_and_tokenizer(model_name):
@@ -154,10 +155,10 @@ def generar_resumen_extractivo(texto, ratio, algoritmo="pagerank"):
 
     return resumen
 
-def start_transcription(url, source_lang):
+def start_transcription(url, source_lang, result_queue):
     global translated_text
     translated_text = transcribe_and_translate(url, source_lang=source_lang)
-
+    result_queue.put(translated_text)
 def traductor(text, source='en',target='es'):
     traductor = GoogleTranslator(source=source, target=target)
     resultado = traductor.translate(text)
@@ -189,7 +190,8 @@ url = st.text_input('Introduce la URL del video de YouTube', 'https://www.youtub
 idioma_video = st.selectbox('Selecciona el idioma del video', ['es', 'en', 'fr', 'ge'])
 
 if st.button('Enviar URL'):
-    transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video))
+    result_queue = Queue()
+    transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video,result_queue))
     transcription_thread.start()
     st.session_state.transcription_done = False
 
@@ -205,8 +207,7 @@ if st.button('Enviar URL'):
 
     if transcription_thread.is_alive():
         transcription_thread.join()
-
-    translated_text = transcription_thread.join()
+    translated_text = result_queue.get()
     st.session_state.transcription_done = True
     st.session_state.translated_text = translated_text
 
@@ -217,7 +218,6 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
     if st.button('Generar Resumen'):
         st.write('Generando resumen...')
         text = translated_text
-        st.write(text)
         reduced_text = generar_resumen_extractivo(text, ratio=0.3)
         model, tokenizer, device = initialize_model_and_tokenizer(model_name)
         _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
