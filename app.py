@@ -35,7 +35,7 @@ def sumary_final(inputs):
   summary_ids = model.generate(inputs, max_length=150, min_length=100, length_penalty=0.1, num_beams=16, no_repeat_ngram_size=4)
   return summary_ids
 
-def transcribe_and_translate(url, source_lang='es', target_lang='en', device='cuda'):
+def transcribe_and_translate(url, source_lang='es', target_lang='en', device='cpu'):
     # Crear un objeto YouTube
     yt = YouTube(url)
     # Obtener el stream de audio de mayor calidad
@@ -157,8 +157,10 @@ def generar_resumen_extractivo(texto, ratio, algoritmo="pagerank"):
 
 def start_transcription(url, source_lang, result_queue):
     global translated_text
-    translated_text = transcribe_and_translate(url, source_lang=source_lang)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    translated_text = transcribe_and_translate(url, source_lang=source_lang, device=device)
     result_queue.put(translated_text)
+    
 def traductor(text, source='en',target='es'):
     traductor = GoogleTranslator(source=source, target=target)
     resultado = traductor.translate(text)
