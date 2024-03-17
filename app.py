@@ -43,7 +43,7 @@ def transcribe_and_translate(url, source_lang='es', target_lang='en', device='cp
     # Descargar el audio
     audio_file = audio_stream.download()
     # Transcribir el audio usando whisperx
-    model = whisperx.load_model("large-v2", device, compute_type="float16")
+    model = whisperx.load_model("large-v2", device, compute_type="float32")
     audio = whisperx.load_audio(audio_file)
     result = model.transcribe(audio, batch_size=16)
     # Alinear el texto con el audio
@@ -156,7 +156,6 @@ def generar_resumen_extractivo(texto, ratio, algoritmo="pagerank"):
     return resumen
 
 def start_transcription(url, source_lang, result_queue):
-    global translated_text
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     translated_text = transcribe_and_translate(url, source_lang=source_lang, device=device)
     result_queue.put(translated_text)
