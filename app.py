@@ -43,7 +43,7 @@ def transcribe_and_translate(url, source_lang='es', target_lang='en', device='cp
     # Descargar el audio
     audio_file = audio_stream.download()
     # Transcribir el audio usando whisperx
-    model = whisperx.load_model("large-v2", device, compute_type="float32")
+    model = whisperx.load_model("large-v2", device, compute_type="default")
     audio = whisperx.load_audio(audio_file)
     result = model.transcribe(audio, batch_size=16)
     # Alinear el texto con el audio
