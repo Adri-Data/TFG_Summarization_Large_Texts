@@ -240,17 +240,23 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
     
         st.write("_________________________________________________________________\n\n")
-        
+                
         # Sistema de feedback
         summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
         summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
+        
+        # Crea dos columnas
+        col1, col2 = st.beta_columns(2)
+        
+        # Coloca el widget de selección en la primera columna y el botón en la segunda
+        with col1:
+            user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
+        with col2:
+            if st.button('Enviar voto'):
+                st.write(f"Has votado por: {summary_labels[user_vote]}")
+                
+                # Almacenamiento de votos
+                with open('votes.csv', 'a', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow([summary_labels[user_vote]])
 
-        user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
-
-        if st.button('Enviar voto'):
-            st.write(f"Has votado por: {summary_labels[user_vote]}")
-            
-            # Almacenamiento de votos
-            with open('votes.csv', 'a', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow([summary_labels[user_vote]])
