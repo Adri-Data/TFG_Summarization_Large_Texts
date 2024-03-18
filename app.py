@@ -216,11 +216,14 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
     translated_text = st.session_state.translated_text
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
+    texto_procesado = False
     if st.button('Generar Resumen'):
         st.write('Generando resumen...')
         text = translated_text
         reduced_text = generar_resumen_extractivo(text, ratio=0.3)
         model, tokenizer, device = initialize_model_and_tokenizer(model_name)
+        texto_procesado = True
+    if texto_procesado:
         _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
         st.write(f"Model: {model_name}")
         st.write("_________________________________________________________________\n\n")
