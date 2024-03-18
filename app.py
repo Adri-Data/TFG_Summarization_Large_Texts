@@ -214,7 +214,6 @@ if st.button('Enviar URL'):
 
 if 'transcription_done' in st.session_state and st.session_state.transcription_done:
     translated_text = st.session_state.translated_text
-    translated_text="Para mi TFG, genero resúmenes de textos largos utilizando Inteligencia Artificial"
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     if st.button('Generar Resumen'):
@@ -222,7 +221,7 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         text = translated_text
         reduced_text = generar_resumen_extractivo(text, ratio=0.3)
         model, tokenizer, device = initialize_model_and_tokenizer(model_name)
-        _, summary_original = resumir_texto_final([_, translated_text], model, tokenizer, device)
+        _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
         st.write(f"Model: {model_name}")
         st.write("_________________________________________________________________\n\n")
         st.write(f"\n Generated Summary without the pipeline: {summary_original}")
@@ -232,7 +231,7 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         st.write(f"\n Generated Summary with the pipeline: {summary_pipeline}")
         st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
     
-        _, summary_original_extracted = resumir_texto_final([_, reduced_text], model, tokenizer, device)
+        _, summary_original_extracted = resumir_texto_final([0, reduced_text], model, tokenizer, device)
         st.write(f"\n Generated Summary with extractive summarization: {summary_original_extracted}")
         st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
     
