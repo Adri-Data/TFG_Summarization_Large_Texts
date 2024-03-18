@@ -246,7 +246,7 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
         
         # Crea dos columnas
-        col1, col2 = st.beta_columns(2)
+        col1, col2 = st.columns(2)
         
         # Coloca el widget de selección en la primera columna y el botón en la segunda
         with col1:
