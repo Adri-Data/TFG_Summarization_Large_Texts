@@ -6,6 +6,7 @@ import concurrent.futures
 import nltk
 import torch
 import time
+import random
 from concurrent.futures import ThreadPoolExecutor
 from transformers import AutoModelForSeq2SeqLM, AutoModelWithLMHead, AutoTokenizer, MarianMTModel, MarianTokenizer
 from pytube import YouTube
@@ -245,28 +246,37 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         # Sistema de feedback
         summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
         st.session_state.summary_options = summary_options
-    if 'button_clicked' in st.session_state:
-        summary_options = st.session_state.summary_options
-        [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted] = summary_options
-        summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
-        st.write(f"Model: {model_name}")
 
-        st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
-        st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
-        st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
-        st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
-        # Crea dos columnas
-        col1, col2 = st.columns(2)
-        
-        # Coloca el widget de selección en la primera columna y el botón en la segunda
-        with col1:
-            user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: summary_labels[x])
-        with col2:
-            if st.button('Enviar voto'):
-                st.write(f"Has votado por: {summary_labels[user_vote]}")
-                
-                # Almacenamiento de votos
-                with open('votes.csv', 'a', newline='') as f:
-                    writer = csv.writer(f)
-                    writer.writerow([summary_labels[user_vote]])
+if 'button_clicked' in st.session_state:
+    summary_options = st.session_state.summary_options
+    [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted] = summary_options
+    summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
+    
+    # Mezcla las opciones de resumen y las etiquetas juntas para que los usuarios no sepan cuál es cuál
+    combined = list(zip(summary_labels, summary_options))
+    random.shuffle(combined)
+    summary_labels_shuffled, summary_options_shuffled = zip(*combined)
+    
+    st.write(f"Model: {model_name}")
+    st.write("_________________________________________________________________\n\n")
+    
+    for label, option in zip(summary_labels_shuffled, summary_options_shuffled):
+        st.write(f"\n {label}: {traductor(option)}")
+        st.write("_________________________________________________________________\n\n")
+    
+    # Crea dos columnas
+    col1, col2 = st.columns(2)
+    
+    # Coloca el widget de selección en la primera columna y el botón en la segunda
+    with col1:
+        user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options_shuffled)), format_func=lambda x: summary_labels_shuffled[x])
+    with col2:
+        if st.button('Enviar voto'):
+            st.write(f"Has votado por: {summary_labels_shuffled[user_vote]}")
+            
+            # Almacenamiento de votos
+            with open('votes.csv', 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([model_name, summary_labels[user_vote], summary_options[user_vote]])
+
 
