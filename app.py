@@ -214,6 +214,7 @@ if st.button('Enviar URL'):
 
 if 'transcription_done' in st.session_state and st.session_state.transcription_done:
     translated_text = st.session_state.translated_text
+    translated_text="Para mi TFG, genero resúmenes de textos largos utilizando Inteligencia Artificial"
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     if st.button('Generar Resumen'):
@@ -240,7 +241,7 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
     
         st.write("_________________________________________________________________\n\n")
-        '''
+        
         # Sistema de feedback
         summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
         summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
@@ -253,4 +254,4 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
             # Almacenamiento de votos
             with open('votes.csv', 'a', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow([summary_labels[user_vote]])'''
+                writer.writerow([summary_labels[user_vote]])
