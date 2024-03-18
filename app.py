@@ -227,46 +227,30 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
 
         _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
         st.write(f"Model: {model_name}")
-        st.write("_________________________________________________________________\n\n")
-        st.write(f"\n Generated Summary without the pipeline: {summary_original}")
         st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
     
         summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
-        st.write(f"\n Generated Summary with the pipeline: {summary_pipeline}")
         st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
     
         _, summary_original_extracted = resumir_texto_final([0, reduced_text], model, tokenizer, device)
-        st.write(f"\n Generated Summary with extractive summarization: {summary_original_extracted}")
         st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
     
         summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
-        st.write(f"\n Generated Summary with pipeline and extractive summarization: {summary_pipeline_extracted}")
         st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
-    
-        st.write("_________________________________________________________________\n\n")
-        
+
 
         # Sistema de feedback
         summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
         st.session_state.summary_options = summary_options
     if 'button_clicked' in st.session_state:
-        summary_options = st.session_state.summary_options
+        [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted] = st.session_state.summary_options
         summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
         st.write(f"Model: {model_name}")
-        st.write("_________________________________________________________________\n\n")
-        st.write(f"\n Generated Summary without the pipeline: {summary_original}")
+
         st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
-    
-        st.write(f"\n Generated Summary with the pipeline: {summary_pipeline}")
         st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
-    
-        st.write(f"\n Generated Summary with extractive summarization: {summary_original_extracted}")
         st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
-    
-        st.write(f"\n Generated Summary with pipeline and extractive summarization: {summary_pipeline_extracted}")
         st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
-    
-        st.write("_________________________________________________________________\n\n")
         # Crea dos columnas
         col1, col2 = st.columns(2)
         
