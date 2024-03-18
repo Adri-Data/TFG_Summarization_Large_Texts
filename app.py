@@ -222,8 +222,9 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         text = translated_text
         reduced_text = generar_resumen_extractivo(text, ratio=0.3)
         model, tokenizer, device = initialize_model_and_tokenizer(model_name)
-        texto_procesado = True
-    if texto_procesado:
+        st.session_state.button_clicked = True  
+        
+if 'button_clicked' in st.session_state:
         _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
         st.write(f"Model: {model_name}")
         st.write("_________________________________________________________________\n\n")
@@ -243,7 +244,8 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
         st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
     
         st.write("_________________________________________________________________\n\n")
-                
+        
+
         # Sistema de feedback
         summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
         summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
