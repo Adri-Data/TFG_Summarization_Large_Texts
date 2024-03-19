@@ -218,30 +218,37 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     texto_procesado = False
-    if st.button('Generar Resumen'):
-        st.write('Generando resumen...')
+if st.button('Generar Resumen'):
+    st.session_state.texto_procesado = False
+    progress_bar = st.progress(0)
+    with st.spinner('Preparando para generar el resumen...'):
         text = translated_text
         reduced_text = generar_resumen_extractivo(text, ratio=0.3)
-        st.write(f"Reduced text ready")
+        st.spinner('Texto reducido listo...')
+        progress_bar.progress(20)
+
         model, tokenizer, device = initialize_model_and_tokenizer(model_name)
-        st.write(f"Model ready")
-        st.session_state.button_clicked = True  
-        
+        st.spinner('Modelo listo...')
+        progress_bar.progress(40)
 
         _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
-        st.write(f"Model: {model_name}")
-        st.write(f"Generated Summary without the pipeline")
-        #st.write(f"\n Generated Summary without the pipeline: {traductor(summary_original)}")
-    
+        st.spinner('Resumen generado sin la pipeline...')
+        progress_bar.progress(60)
+
         summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
-        #st.write(f"\n Generated Summary with the pipeline: {traductor(summary_pipeline)}")
-        st.write(f"Generated Summary with the pipeline")
+        st.spinner('Resumen generado con la pipeline...')
+        progress_bar.progress(80)
+
         _, summary_original_extracted = resumir_texto_final([0, reduced_text], model, tokenizer, device)
-        #st.write(f"\n Generated Summary with extractive summarization: {traductor(summary_original_extracted)}")
-        st.write(f"Generated Summary with extractive summarization")
+        st.spinner('Resumen generado con la sumarización extractiva...')
+        progress_bar.progress(90)
+
         summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
-        #st.write(f"\n Generated Summary with pipeline and extractive summarization: {traductor(summary_pipeline_extracted)}")
-        st.write(f"Generated Summary with pipeline and extractive summarization")
+        st.spinner('Resumen generado con la pipeline y la sumarización extractiva...')
+        progress_bar.progress(100)
+
+        st.success('¡Resumen generado con éxito!')
+        st.session_state.texto_procesado = True
 
         # Sistema de feedback
         summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
@@ -269,14 +276,17 @@ if 'button_clicked' in st.session_state:
     
     # Coloca el widget de selección en la primera columna y el botón en la segunda
     with col1:
-        user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options_shuffled)), format_func=lambda x: summary_labels_shuffled[x])
+        if 'user_vote' not in st.session_state:
+            st.session_state.user_vote = 0
+        st.session_state.user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options_shuffled)), format_func=lambda x: summary_labels_shuffled[x], key='user_vote')
     with col2:
         if st.button('Enviar voto'):
-            st.write(f"Has votado por: {summary_labels_shuffled[user_vote]}")
+            st.write(f"Has votado por: {summary_labels_shuffled[st.session_state.user_vote]}")
             
             # Almacenamiento de votos
             with open('votes.csv', 'a', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow([model_name, summary_labels[user_vote], summary_options[user_vote]])
+                writer.writerow([model_name, summary_labels[st.session_state.user_vote], summary_options[st.session_state.user_vote]])
+
 
 
