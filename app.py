@@ -233,19 +233,19 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
             progress_bar.progress(40)
     
             _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
-            with st.spinner('Resumen generado sin la pipeline...'):
+        with st.spinner('Resumen generado sin la pipeline...'):
             progress_bar.progress(60)
     
             summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
-            with st.spinner('Resumen generado con la pipeline...'):
+        with st.spinner('Resumen generado con la pipeline...'):
             progress_bar.progress(80)
     
             _, summary_original_extracted = resumir_texto_final([0, reduced_text], model, tokenizer, device)
-            with st.spinner('Resumen generado con la sumarización extractiva...'):
+        with st.spinner('Resumen generado con la sumarización extractiva...'):
             progress_bar.progress(90)
     
             summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
-            with st.spinner('Resumen generado con la pipeline y la sumarización extractiva...''):
+        with st.spinner('Resumen generado con la pipeline y la sumarización extractiva...'):
             progress_bar.progress(100)
     
             st.success('¡Resumen generado con éxito!')
