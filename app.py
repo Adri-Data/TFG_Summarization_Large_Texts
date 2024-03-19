@@ -51,26 +51,31 @@ def transcribe_and_translate(url, source_lang='es', target_lang='en', device='cp
     model_a, metadata = whisperx.load_align_model(language_code=source_lang, device=device)
     result = whisperx.align(result["segments"], model_a, metadata, audio, device, return_char_alignments=False)
     # Traducir el texto al inglés usando MarianMT
-    modelo_nombre = f'Helsinki-NLP/opus-mt-{source_lang}-{target_lang}'
-    modelo = MarianMTModel.from_pretrained(modelo_nombre).to(device)
-    tokenizador = MarianTokenizer.from_pretrained(modelo_nombre)
+    if (source_lang!=target_lang):
+        modelo_nombre = f'Helsinki-NLP/opus-mt-{source_lang}-{target_lang}'
+        modelo = MarianMTModel.from_pretrained(modelo_nombre).to(device)
+        tokenizador = MarianTokenizer.from_pretrained(modelo_nombre)
 
-    def traducir_segmento(segmento):
-        id, texto = segmento
+        def traducir_segmento(segmento):
+            id, texto = segmento
+            # Codificar el texto y generar la traducción
+            texto_tokenizado = tokenizador.prepare_seq2seq_batch([texto], return_tensors='pt').to(device)
+            traduccion_ids = modelo.generate(**texto_tokenizado)
+            traduccion = tokenizador.decode(traduccion_ids[0], skip_special_tokens=True)
+            return id, traduccion
+
         # Codificar el texto y generar la traducción
-        texto_tokenizado = tokenizador.prepare_seq2seq_batch([texto], return_tensors='pt').to(device)
-        traduccion_ids = modelo.generate(**texto_tokenizado)
-        traduccion = tokenizador.decode(traduccion_ids[0], skip_special_tokens=True)
-        return id, traduccion
+        with ThreadPoolExecutor() as executor:
+            segmentos = [(i, diccionario['text']) for i, diccionario in enumerate(result["segments"])]
+            traducciones = list(executor.map(traducir_segmento, segmentos))
+            # Ordenar las traducciones por id y juntarlas
+            texto_traducido = " ".join(traduccion for id, traduccion in sorted(traducciones))
+    else:
+        # Si el idioma de origen y el idioma de destino son los mismos, devolver el texto original
+        texto_traducido = " ".join(segmento['text'] for segmento in result["segments"])
 
-    # Codificar el texto y generar la traducción
-    with ThreadPoolExecutor() as executor:
-        segmentos = [(i, diccionario['text']) for i, diccionario in enumerate(result["segments"])]
-        traducciones = list(executor.map(traducir_segmento, segmentos))
-        # Ordenar las traducciones por id y juntarlas
-        texto_traducido = " ".join(traduccion for id, traduccion in sorted(traducciones))
-        # Devolver el texto traducido
     return texto_traducido
+
 
 
 def divide_texto(texto, tokenizer, longitud_max=512):
