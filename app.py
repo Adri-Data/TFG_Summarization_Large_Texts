@@ -218,41 +218,42 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
     idioma_resumen = st.selectbox('Selecciona el idioma del resumen', ['es', 'en', 'fr', 'ge'])
     model_name = st.selectbox('Selecciona el modelo de IA', ['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased'])
     texto_procesado = False
-if st.button('Generar Resumen'):
-    st.session_state.texto_procesado = False
-    progress_bar = st.progress(0)
-    with st.spinner('Preparando para generar el resumen...'):
-        text = translated_text
-        reduced_text = generar_resumen_extractivo(text, ratio=0.3)
-        st.spinner('Texto reducido listo...')
-        progress_bar.progress(20)
-
-        model, tokenizer, device = initialize_model_and_tokenizer(model_name)
-        st.spinner('Modelo listo...')
-        progress_bar.progress(40)
-
-        _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
-        st.spinner('Resumen generado sin la pipeline...')
-        progress_bar.progress(60)
-
-        summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
-        st.spinner('Resumen generado con la pipeline...')
-        progress_bar.progress(80)
-
-        _, summary_original_extracted = resumir_texto_final([0, reduced_text], model, tokenizer, device)
-        st.spinner('Resumen generado con la sumarización extractiva...')
-        progress_bar.progress(90)
-
-        summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
-        st.spinner('Resumen generado con la pipeline y la sumarización extractiva...')
-        progress_bar.progress(100)
-
-        st.success('¡Resumen generado con éxito!')
-        st.session_state.texto_procesado = True
-
-        # Sistema de feedback
-        summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
-        st.session_state.summary_options = summary_options
+    if st.button('Generar Resumen'):
+        st.session_state.texto_procesado = False
+        progress_bar = st.progress(0)
+        with st.spinner('Preparando para generar el resumen...'):
+            text = translated_text
+            
+            reduced_text = generar_resumen_extractivo(text, ratio=0.3)
+        with st.spinner('Texto reducido listo...'):
+            progress_bar.progress(20)
+            
+            model, tokenizer, device = initialize_model_and_tokenizer(model_name)
+        with st.spinner('Texto reducido listo...'):
+            progress_bar.progress(40)
+    
+            _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
+            with st.spinner('Resumen generado sin la pipeline...'):
+            progress_bar.progress(60)
+    
+            summary_pipeline = resumir_texto_paralelo(text, model, tokenizer, device, max_length=400, print_option="no")
+            with st.spinner('Resumen generado con la pipeline...'):
+            progress_bar.progress(80)
+    
+            _, summary_original_extracted = resumir_texto_final([0, reduced_text], model, tokenizer, device)
+            with st.spinner('Resumen generado con la sumarización extractiva...'):
+            progress_bar.progress(90)
+    
+            summary_pipeline_extracted = resumir_texto_paralelo(reduced_text, model, tokenizer, device, max_length=400, print_option="no")
+            with st.spinner('Resumen generado con la pipeline y la sumarización extractiva...''):
+            progress_bar.progress(100)
+    
+            st.success('¡Resumen generado con éxito!')
+            st.session_state.texto_procesado = True
+            st.session_state.button_clicked = True
+            # Sistema de feedback
+            summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
+            st.session_state.summary_options = summary_options
 
 if 'button_clicked' in st.session_state:
     summary_options = st.session_state.summary_options
