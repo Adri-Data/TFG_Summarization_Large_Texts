@@ -189,11 +189,12 @@ st.markdown('<p class="medium-font">Para mi TFG, genero resúmenes de textos lar
 st.markdown('Por favor, introduce la URL de un video de YouTube, selecciona el idioma del video y del resumen, y elige el modelo de IA que se utilizará para generar el resumen.')
 
 url = st.text_input('Introduce la URL del video de YouTube', 'https://www.youtube.com/watch?v=efoTZzqOrI8')
+st.video(url)
 idioma_video = st.selectbox('Selecciona el idioma del video', ['es', 'en', 'fr', 'ge'])
 
 if st.button('Enviar URL'):
     result_queue = Queue()
-    transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video,result_queue))
+    transcription_thread = threading.Thread(target=start_transcription, args=(url, idioma_video ,result_queue))
     transcription_thread.start()
     st.session_state.transcription_done = False
 
@@ -229,7 +230,7 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
             progress_bar.progress(20)
             
             model, tokenizer, device = initialize_model_and_tokenizer(model_name)
-        with st.spinner('Texto reducido listo...'):
+        with st.spinner('Modelo inicializado...'):
             progress_bar.progress(40)
     
             _, summary_original = resumir_texto_final([0, translated_text], model, tokenizer, device)
@@ -253,24 +254,29 @@ if 'transcription_done' in st.session_state and st.session_state.transcription_d
             st.session_state.button_clicked = True
             # Sistema de feedback
             summary_options = [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted]
-            st.session_state.summary_options = summary_options
+            summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
+            
+            # Mezcla las opciones de resumen y las etiquetas juntas para que los usuarios no sepan cuál es cuál
+            combined = list(zip(summary_labels, summary_options))
+            random.shuffle(combined)
+            summary_labels_shuffled, summary_options_shuffled = zip(*combined)
+
+            st.session_state.summary_options = summary_options_shuffled
+            st.session_state.summary_labels = summary_labels_shuffled
+            st.session_state.first_time = True
 
 if 'button_clicked' in st.session_state:
     summary_options = st.session_state.summary_options
-    [summary_original, summary_pipeline, summary_original_extracted, summary_pipeline_extracted] = summary_options
-    summary_labels = ["Resumen original", "Resumen con pipeline", "Resumen con resumen extractivo", "Resumen con pipeline y resumen extractivo"]
-    
-    # Mezcla las opciones de resumen y las etiquetas juntas para que los usuarios no sepan cuál es cuál
-    combined = list(zip(summary_labels, summary_options))
-    random.shuffle(combined)
-    summary_labels_shuffled, summary_options_shuffled = zip(*combined)
-    
+    summary_labels = st.session_state.summary_labels
+
     st.write(f"Model: {model_name}")
     st.write("_________________________________________________________________\n\n")
     
-    for label, option in zip(summary_labels_shuffled, summary_options_shuffled):
+    # Crea etiquetas anónimas para las opciones de resumen
+    anonymous_labels = [f"Resumen {chr(i)}" for i in range(65, 65 + len(summary_options))]  # 65 es el código ASCII para 'A'
+    
+    for label, option in zip(anonymous_labels, summary_options):
         st.write(f"\n {label}: {traductor(option)}")
-        st.write("_________________________________________________________________\n\n")
     
     # Crea dos columnas
     col1, col2 = st.columns(2)
@@ -279,15 +285,13 @@ if 'button_clicked' in st.session_state:
     with col1:
         if 'user_vote' not in st.session_state:
             st.session_state.user_vote = 0
-        st.session_state.user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options_shuffled)), format_func=lambda x: summary_labels_shuffled[x], key='user_vote')
+        user_vote = st.radio("Selecciona tu resumen favorito:", options=range(len(summary_options)), format_func=lambda x: anonymous_labels[x], key='user_vote')
     with col2:
         if st.button('Enviar voto'):
-            st.write(f"Has votado por: {summary_labels_shuffled[st.session_state.user_vote]}")
+            # Mapea la etiqueta anónima a la etiqueta real
+            real_label = summary_labels[st.session_state.user_vote]
+            st.write(f"Has votado por: {anonymous_labels[st.session_state.user_vote]}")
             
-            # Almacenamiento de votos
             with open('votes.csv', 'a', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow([model_name, summary_labels[st.session_state.user_vote], summary_options[st.session_state.user_vote]])
-
-
-
+                writer.writerow([model_name, real_label, summary_options[st.session_state.user_vote]])
