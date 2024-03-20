@@ -1,0 +1,54 @@
+['google-t5/t5-base', 'tuner007/pegasus_summarizer', 'facebook/bart-large-cnn', 'microsoft/prophetnet-large-uncased']
+comenzamos a tomar los modelos
+google-t5/t5-base
+google-t5/t5-base pipeline_extracted
+          model_name             methods  ROUGE1-Precision  ROUGE1-Recall  ROUGE1-F1  ROUGE2-Precision  ROUGE2-Recall  ROUGE2-F1  ROUGEL-Precision  ROUGEL-Recall  ROUGEL-F1  BLEU    METEOR  Cosine Similarity  BERTScore
+0  google-t5/t5-base            original          0.092928       0.472635   0.152744          0.012291       0.060390   0.020042          0.056462       0.285119   0.092685   1.0  0.053357           0.556427        1.0
+1  google-t5/t5-base  original_extracted          0.090762       0.453255   0.148184          0.010577       0.052898   0.017300          0.053797       0.272633   0.088153   1.0  0.051792           0.521782        1.0
+2  google-t5/t5-base            pipeline          0.084905       0.466589   0.141766          0.009931       0.058011   0.016804          0.048365       0.271738   0.081032   1.0  0.045489           0.515149        1.0
+3  google-t5/t5-base  pipeline_extracted          0.083044       0.435926   0.137439          0.009137       0.048222   0.015198          0.049514       0.267070   0.082409   1.0  0.047553           0.451588        1.0
+tuner007/pegasus_summarizer
+tuner007/pegasus_summarizer pipeline_extracted
+                    model_name             methods  ROUGE1-Precision  ROUGE1-Recall  ROUGE1-F1  ROUGE2-Precision  ROUGE2-Recall  ROUGE2-F1  ROUGEL-Precision  ROUGEL-Recall  ROUGEL-F1  BLEU    METEOR  Cosine Similarity  BERTScore
+0            google-t5/t5-base            original          0.092928       0.472635   0.152744          0.012291       0.060390   0.020042          0.056462       0.285119   0.092685   1.0  0.053357           0.556427        1.0
+1            google-t5/t5-base  original_extracted          0.090762       0.453255   0.148184          0.010577       0.052898   0.017300          0.053797       0.272633   0.088153   1.0  0.051792           0.521782        1.0
+2            google-t5/t5-base            pipeline          0.084905       0.466589   0.141766          0.009931       0.058011   0.016804          0.048365       0.271738   0.081032   1.0  0.045489           0.515149        1.0
+3            google-t5/t5-base  pipeline_extracted          0.083044       0.435926   0.137439          0.009137       0.048222   0.015198          0.049514       0.267070   0.082409   1.0  0.047553           0.451588        1.0
+4  tuner007/pegasus_summarizer            original          0.111289       0.434106   0.173525          0.015610       0.061821   0.024342          0.064706       0.253458   0.101013   1.0  0.065214           0.612748        1.0
+5  tuner007/pegasus_summarizer  original_extracted          0.119935       0.487151   0.189844          0.018886       0.075613   0.029860          0.066807       0.273208   0.105861   1.0  0.065919           0.628869        1.0
+6  tuner007/pegasus_summarizer            pipeline          0.115886       0.494975   0.184352          0.016091       0.072009   0.025911          0.066329       0.288579   0.106001   1.0  0.066774           0.609017        1.0
+7  tuner007/pegasus_summarizer  pipeline_extracted          0.105968       0.449798   0.168934          0.015507       0.063388   0.024560          0.065881       0.273915   0.104686   1.0  0.057272           0.578877        1.0
+facebook/bart-large-cnn
+facebook/bart-large-cnn pipeline_extracted
+                     model_name             methods  ROUGE1-Precision  ROUGE1-Recall  ROUGE1-F1  ROUGE2-Precision  ROUGE2-Recall  ROUGE2-F1  ROUGEL-Precision  ROUGEL-Recall  ROUGEL-F1  BLEU    METEOR  Cosine Similarity  BERTScore
+0       facebook/bart-large-cnn            original          0.118413       0.475824   0.186129          0.019746       0.080439   0.031146          0.070204       0.283577   0.110533   1.0  0.065500           0.653138        1.0
+1       facebook/bart-large-cnn  original_extracted          0.107091       0.457619   0.170720          0.013288       0.055797   0.021202          0.063584       0.275933   0.101603   1.0  0.057898           0.593254        1.0
+2       facebook/bart-large-cnn            pipeline          0.125656       0.526213   0.198929          0.022496       0.093638   0.035552          0.076140       0.319141   0.120514   1.0  0.070535           0.678093        1.0
+3       facebook/bart-large-cnn  pipeline_extracted          0.101885       0.449021   0.163111          0.011542       0.050839   0.018516          0.058499       0.264897   0.094140   1.0  0.058963           0.576822        1.0
+4             google-t5/t5-base            original          0.092928       0.472635   0.152744          0.012291       0.060390   0.020042          0.056462       0.285119   0.092685   1.0  0.053357           0.556427        1.0
+5             google-t5/t5-base  original_extracted          0.090762       0.453255   0.148184          0.010577       0.052898   0.017300          0.053797       0.272633   0.088153   1.0  0.051792           0.521782        1.0
+6             google-t5/t5-base            pipeline          0.084905       0.466589   0.141766          0.009931       0.058011   0.016804          0.048365       0.271738   0.081032   1.0  0.045489           0.515149        1.0
+7             google-t5/t5-base  pipeline_extracted          0.083044       0.435926   0.137439          0.009137       0.048222   0.015198          0.049514       0.267070   0.082409   1.0  0.047553           0.451588        1.0
+8   tuner007/pegasus_summarizer            original          0.111289       0.434106   0.173525          0.015610       0.061821   0.024342          0.064706       0.253458   0.101013   1.0  0.065214           0.612748        1.0
+9   tuner007/pegasus_summarizer  original_extracted          0.119935       0.487151   0.189844          0.018886       0.075613   0.029860          0.066807       0.273208   0.105861   1.0  0.065919           0.628869        1.0
+10  tuner007/pegasus_summarizer            pipeline          0.115886       0.494975   0.184352          0.016091       0.072009   0.025911          0.066329       0.288579   0.106001   1.0  0.066774           0.609017        1.0
+11  tuner007/pegasus_summarizer  pipeline_extracted          0.105968       0.449798   0.168934          0.015507       0.063388   0.024560          0.065881       0.273915   0.104686   1.0  0.057272           0.578877        1.0
+microsoft/prophetnet-large-uncased
+microsoft/prophetnet-large-uncased pipeline_extracted
+                            model_name             methods  ROUGE1-Precision  ROUGE1-Recall  ROUGE1-F1  ROUGE2-Precision  ROUGE2-Recall  ROUGE2-F1  ROUGEL-Precision  ROUGEL-Recall  ROUGEL-F1  BLEU    METEOR  Cosine Similarity  BERTScore
+0              facebook/bart-large-cnn            original          0.118413       0.475824   0.186129          0.019746       0.080439   0.031146          0.070204       0.283577   0.110533   1.0  0.065500           0.653138        1.0
+1              facebook/bart-large-cnn  original_extracted          0.107091       0.457619   0.170720          0.013288       0.055797   0.021202          0.063584       0.275933   0.101603   1.0  0.057898           0.593254        1.0
+2              facebook/bart-large-cnn            pipeline          0.125656       0.526213   0.198929          0.022496       0.093638   0.035552          0.076140       0.319141   0.120514   1.0  0.070535           0.678093        1.0
+3              facebook/bart-large-cnn  pipeline_extracted          0.101885       0.449021   0.163111          0.011542       0.050839   0.018516          0.058499       0.264897   0.094140   1.0  0.058963           0.576822        1.0
+4                    google-t5/t5-base            original          0.092928       0.472635   0.152744          0.012291       0.060390   0.020042          0.056462       0.285119   0.092685   1.0  0.053357           0.556427        1.0
+5                    google-t5/t5-base  original_extracted          0.090762       0.453255   0.148184          0.010577       0.052898   0.017300          0.053797       0.272633   0.088153   1.0  0.051792           0.521782        1.0
+6                    google-t5/t5-base            pipeline          0.084905       0.466589   0.141766          0.009931       0.058011   0.016804          0.048365       0.271738   0.081032   1.0  0.045489           0.515149        1.0
+7                    google-t5/t5-base  pipeline_extracted          0.083044       0.435926   0.137439          0.009137       0.048222   0.015198          0.049514       0.267070   0.082409   1.0  0.047553           0.451588        1.0
+8   microsoft/prophetnet-large-uncased            original          0.140141       0.416310   0.202819          0.018705       0.062192   0.027873          0.080089       0.245971   0.117054   1.0  0.078187           0.591875        1.0
+9   microsoft/prophetnet-large-uncased  original_extracted          0.105574       0.379333   0.159971          0.010994       0.039847   0.016781          0.062485       0.229859   0.094948   1.0  0.062403           0.469549        1.0
+10  microsoft/prophetnet-large-uncased            pipeline          0.130873       0.439170   0.191766          0.015279       0.050205   0.022403          0.085563       0.303821   0.126889   1.0  0.072943           0.532441        1.0
+11  microsoft/prophetnet-large-uncased  pipeline_extracted          0.102096       0.377428   0.155629          0.011144       0.042746   0.016934          0.064976       0.247212   0.099626   1.0  0.057695           0.386487        1.0
+12         tuner007/pegasus_summarizer            original          0.111289       0.434106   0.173525          0.015610       0.061821   0.024342          0.064706       0.253458   0.101013   1.0  0.065214           0.612748        1.0
+13         tuner007/pegasus_summarizer  original_extracted          0.119935       0.487151   0.189844          0.018886       0.075613   0.029860          0.066807       0.273208   0.105861   1.0  0.065919           0.628869        1.0
+14         tuner007/pegasus_summarizer            pipeline          0.115886       0.494975   0.184352          0.016091       0.072009   0.025911          0.066329       0.288579   0.106001   1.0  0.066774           0.609017        1.0
+15         tuner007/pegasus_summarizer  pipeline_extracted          0.105968       0.449798   0.168934          0.015507       0.063388   0.024560          0.065881       0.273915   0.104686   1.0  0.057272           0.578877        1.0
