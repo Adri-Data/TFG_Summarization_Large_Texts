@@ -1,0 +1,5 @@
+!pip install -r requirements.txt
+!pip install -q streamlit
+!npm install localtunnel
+!streamlit run app.py &>/content/logs.txt &
+!npx localtunnel --port 8501
